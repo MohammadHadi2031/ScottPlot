@@ -142,6 +142,8 @@ namespace ScottPlot.Renderable
             return AxisLabel.Label;
         }
 
+        public void SetLabelVisibility(bool isVisible) => AxisLabel.IsVisible = isVisible;
+
         /// <summary>
         /// Display a custom image as the axis label instead of text
         /// </summary>
