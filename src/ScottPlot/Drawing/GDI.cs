@@ -25,17 +25,20 @@ namespace ScottPlot.Drawing
         public static float GetScaleRatio()
         {
             const int DEFAULT_DPI = 96;
-            using Graphics gfx = GDI.Graphics(new Bitmap(1, 1));
             return gfx.DpiX / DEFAULT_DPI;
+        }
+
+        static Graphics gfx = Graphics(new Bitmap(1, 1), lowQuality: true);
+        private static object measureStringLock = new object();
+
+        static GDI()
+        {
         }
 
         public static SizeF MeasureString(string text, Font font)
         {
-            using (Bitmap bmp = new Bitmap(1, 1))
-            using (Graphics gfx = Graphics(bmp, lowQuality: true))
-            {
-                return MeasureString(gfx, text, font.Name, font.Size, font.Bold);
-            }
+            //return MeasureString(gfx, text, font.Name, font.Size, font.Bold);
+            return MeasureString(gfx, text, font.BaseFont);
         }
 
         public static SizeF MeasureString(Graphics gfx, string text, string fontName, double fontSize, bool bold = false)
@@ -49,24 +52,29 @@ namespace ScottPlot.Drawing
 
         public static SizeF MeasureString(Graphics gfx, string text, System.Drawing.Font font)
         {
-            SizeF size = gfx.MeasureString(text, font);
-
-            // compensate for OS-specific differences in font scaling
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            lock (measureStringLock)
             {
-                size.Width *= xMultiplierLinux;
-                size.Height *= yMultiplierLinux;
-            }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-            {
-                size.Width *= xMultiplierMacOS;
-                size.Height *= yMultiplierMacOS;
-            }
+                SizeF size = gfx.MeasureString(text, font);
 
-            // ensure the measured height is at least the font size
-            size.Height = Math.Max(font.Size, size.Height);
 
-            return size;
+
+                // compensate for OS-specific differences in font scaling
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                {
+                    size.Width *= xMultiplierLinux;
+                    size.Height *= yMultiplierLinux;
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                {
+                    size.Width *= xMultiplierMacOS;
+                    size.Height *= yMultiplierMacOS;
+                }
+
+                // ensure the measured height is at least the font size
+                size.Height = Math.Max(font.Size, size.Height);
+
+                return size;
+            }
         }
 
         public static System.Drawing.Color Mix(System.Drawing.Color colorA, System.Drawing.Color colorB, double fracA)

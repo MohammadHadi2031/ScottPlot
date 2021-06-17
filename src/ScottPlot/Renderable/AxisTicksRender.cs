@@ -80,7 +80,8 @@ namespace ScottPlot.Renderable
             if (tc.tickLabels is null || tc.tickLabels.Length == 0)
                 return;
 
-            using (var font = GDI.Font(tickFont))
+            var font = tickFont.BaseFont;
+            //using (var font = GDI.Font(tickFont))
             using (var brush = GDI.Brush(tickFont.Color))
             using (var sf = GDI.StringFormat())
             {

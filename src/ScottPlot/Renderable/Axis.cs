@@ -56,7 +56,7 @@ namespace ScottPlot.Renderable
 
         // private renderable components
         private readonly AxisLabel AxisLabel = new AxisLabel();
-        private readonly AxisTicks AxisTicks = new AxisTicks();
+        public readonly AxisTicks AxisTicks = new AxisTicks();
         private readonly AxisLine AxisLine = new AxisLine();
 
         /// <summary>
@@ -399,6 +399,7 @@ namespace ScottPlot.Renderable
         /// </summary>
         public void Hide()
         {
+            IsVisible = false;
             AxisLine.IsVisible = false;
             AxisTicks.MajorTickVisible = false;
             AxisTicks.MinorTickVisible = false;
@@ -417,8 +418,8 @@ namespace ScottPlot.Renderable
         /// </summary>
         public void RecalculateAxisSize()
         {
-            using (var tickFont = GDI.Font(AxisTicks.TickLabelFont))
-            using (var titleFont = GDI.Font(AxisLabel.Font))
+            //using (var tickFont = GDI.Font(AxisTicks.TickLabelFont))
+            //using (var titleFont = GDI.Font(AxisLabel.Font))
             {
                 PixelSize = 0;
 
@@ -451,5 +452,7 @@ namespace ScottPlot.Renderable
                 PixelSize += PixelSizePadding;
             }
         }
+
+        public bool IsAxisTicksVisible => AxisTicks.MajorTickVisible || AxisTicks.MinorTickVisible;
     }
 }

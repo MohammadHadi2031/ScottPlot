@@ -484,7 +484,8 @@ namespace ScottPlot
                 bool isMatchingYAxis = axis.IsVertical && axis.AxisIndex == yAxisIndex;
                 if (isMatchingXAxis || isMatchingYAxis)
                 {
-                    axis.RecalculateTickPositions(dimsFull);
+                   if (axis.IsAxisTicksVisible)
+                        axis.RecalculateTickPositions(dimsFull);
                     axis.RecalculateAxisSize();
                 }
             }
@@ -503,7 +504,8 @@ namespace ScottPlot
                 bool isMatchingYAxis = axis.IsVertical && axis.AxisIndex == yAxisIndex;
                 if (isMatchingXAxis || isMatchingYAxis)
                 {
-                    axis.RecalculateTickPositions(dims3);
+                    if (axis.IsAxisTicksVisible)
+                        axis.RecalculateTickPositions(dims3);
                 }
             }
 
